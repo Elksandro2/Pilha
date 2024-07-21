@@ -1,3 +1,5 @@
+package estruturadados;
+
 public class Pilha<T> {
 
     private T[] elementos;

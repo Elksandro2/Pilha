@@ -1,6 +1,10 @@
+package exercicios;
+
+import estruturadados.Pilha;
+
 import java.util.Scanner;
 
-public class Main {
+public class Ex01 {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
