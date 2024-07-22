@@ -9,7 +9,7 @@ public class Ex03 {
 
         Scanner sc = new Scanner(System.in);
 
-        Pilha<Livro> livros = new Pilha<>(20);
+        Pilha<Livro> livros = new Pilha<>();
 
         System.out.println("Pilha de livros: " + livros);
 

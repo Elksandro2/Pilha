@@ -1,15 +1,17 @@
 package estruturadados;
 
-public class Pilha<T> {
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+public class Pilha<T> implements Iterable<T>{
 
     private T[] elementos;
     private int tamanho;
+    private static final int CAPACIDADE_INICIAL = 8;
 
     public Pilha() {
-        this(10);
-    }
-    public Pilha(int capacidade) {
-        this.elementos = (T[]) new Object[capacidade];
+        this.elementos = (T[]) new Object[CAPACIDADE_INICIAL];
         this.tamanho = 0;
     }
 
@@ -21,39 +23,68 @@ public class Pilha<T> {
         return this.tamanho == 0;
     }
 
-    public boolean empilhar(T elemento){
-        if (this.tamanho < this.elementos.length){
-            this.elementos[this.tamanho++] = elemento;
-            return true;
-        }
-        return false;
+    public void empilhar(T elemento){
+        if (this.tamanho == this.elementos.length) redimensionar(this.elementos.length * 2);
+        this.elementos[this.tamanho++] = elemento;
     }
 
     public T desempilhar(){
-        if (!this.estaVazio()){
-            return this.elementos[--tamanho];
+        if (this.estaVazio()) throw new NoSuchElementException("A pilha está vazia!");
+        T desempilhado = this.elementos[--tamanho];
+        this.elementos[tamanho] = null;
+        if (this.tamanho > 0 && this.tamanho == this.elementos.length/4) redimensionar(this.elementos.length / 2);
+        return desempilhado;
+    }
+
+    private void redimensionar(int capacidade){
+        assert capacidade >= tamanho;
+        T[] elementosNovos = (T[]) new Object[capacidade];
+        for (int i=0; i<this.tamanho; i++){
+            elementosNovos[i] = this.elementos[i];
         }
-        return null;
+        this.elementos = elementosNovos;
+    }
+
+    public T espiar(){
+        if (estaVazio()) throw new NoSuchElementException("Pilha está vazia!");
+        return this.elementos[tamanho-1];
+    }
+
+    public Iterator<T> iterator(){
+        return new ReverseArrayIterator();
     }
 
     @Override
     public String toString() {
-
         StringBuilder s = new StringBuilder();
-        s.append("[");
-
-        for (int i=0; i<this.tamanho-1; i++){
-            s.append(this.elementos[i]);
-            s.append(", ");
+        Iterator<T> it = iterator();
+        while (it.hasNext()){
+            s.append(it.next());
+            if (it.hasNext()) s.append(" ");
         }
-
-        if (this.tamanho>0){
-            s.append(this.elementos[this.tamanho-1]);
-        }
-
-        s.append("]");
 
         return s.toString();
     }
+
+
+    private class ReverseArrayIterator implements Iterator<T> {
+        private int i;
+
+        public ReverseArrayIterator(){
+            i = tamanho - 1;
+        }
+
+        public boolean hasNext(){
+            return i >= 0;
+        }
+
+        public T next(){
+            if (!hasNext()) throw new NoSuchElementException();
+            return elementos[i--];
+        }
+
+    }
+
+
 
 }
